@@ -55,7 +55,9 @@ const MERGE_MOVIES = `
       m.rating = toFloat(row.rating),
       m.runtime = row.runtime,
       m.addedAt = datetime(row.addedAt)
-  // posterPath is deliberately not touched: only the optional TMDB sync sets it
+  FOREACH (_ IN CASE WHEN row.posterPath IS NOT NULL THEN [1] ELSE [] END |
+    SET m.posterPath = row.posterPath
+  )
 `;
 
 const MERGE_MOVIE_GENRES = `
@@ -147,6 +149,7 @@ export function buildCatalogueRows() {
     overview: movie.overview,
     rating: movie.rating,
     runtime: movie.runtime,
+    posterPath: movie.posterPath || null,
     // Later list entries count as more recently added to the catalogue.
     addedAt: iso(CATALOGUE_START + index * DAY),
   }));

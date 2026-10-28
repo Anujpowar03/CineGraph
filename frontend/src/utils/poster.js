@@ -7,8 +7,10 @@
 export const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p';
 
 export function tmdbImage(path, size = 'w500') {
-  if (!path || typeof path !== 'string' || !path.startsWith('/')) return null;
-  return `${TMDB_IMAGE_BASE}/${size}${path}`;
+  if (!path || typeof path !== 'string') return null;
+  if (path.startsWith('http://') || path.startsWith('https://')) return path;
+  if (path.startsWith('/')) return `${TMDB_IMAGE_BASE}/${size}${path}`;
+  return null;
 }
 
 /** Small, stable string hash (FNV-1a). */
